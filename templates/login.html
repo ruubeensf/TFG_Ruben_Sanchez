@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de sesión</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/teamwork.svg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/login.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@100;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <div class="frame">
+        <div class="nav">
+            <ul class="links">
+                <li class="signin-active">
+                    <a class="btn mr-5">
+                        {% if language == 'en' %}
+                            LOG IN
+                        {% elif language == 'es' %}
+                            INICIAR SESIÓN
+                        {% elif language == 'ca' %}
+                            INICIAR SESSIÓ
+                        {% endif %}
+                    </a>
+                    <div class="ml-5 dropdown float-right">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="flagDropdown"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if language == 'es' %}
+                                <img id="currentFlag" src="{{ url_for('static', filename='img/spain.svg') }}"
+                                     alt="España"
+                                     width="20" height="20">
+                            {% elif language == 'en' %}
+                                <img id="currentFlag" src="{{ url_for('static', filename='img/great_britain.png') }}"
+                                     alt="Gran Bretaña"
+                                     width="20" height="20">
+                            {% elif language == 'ca' %}
+                                <img id="currentFlag" src="{{ url_for('static', filename='img/catalonia.png') }}"
+                                     alt="Cataluña"
+                                     width="20" height="20">
+                            {% endif %}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="flagDropdown">
+                            <a class="dropdown-item btn"
+                               onclick="changeLanguage('es')">
+                                <img src="{{ url_for('static', filename='img/spain.svg') }}" alt="España" width="20"
+                                     height="20">
+                                Español
+                            </a>
+                            <a class="dropdown-item btn"
+                               onclick="changeLanguage('en')">
+                                <img src="{{ url_for('static', filename='img/great_britain.png') }}" alt="Gran Bretaña"
+                                     width="20" height="20">
+                                English
+                            </a>
+                            <a class="dropdown-item btn"
+                               onclick="changeLanguage('ca')">
+                                <img src="{{ url_for('static', filename='img/catalonia.png') }}" alt="Cataluña"
+                                     width="20" height="20">
+                                Català
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div ng-app ng-init="checked = false">
+            <form class="form-signin" action="/login" method="POST" name="form">
+                <label for="email">
+                    {% if language == 'en' %}
+                        Email
+                    {% elif language == 'es' %}
+                        Correo electrónico
+                    {% elif language == 'ca' %}
+                        Correu electrònic
+                    {% endif %}
+                </label>
+                <input class="form-styling" type="email" name="email"/>
+                <label for="password">
+                    {% if language == 'en' %}
+                        Password
+                    {% elif language == 'es' %}
+                        Contraseña
+                    {% elif language == 'ca' %}
+                        Contrasenya
+                    {% endif %}
+                </label>
+                <input class="form-styling" id="passwordInput" type="password" name="password"/>
+                <input type="checkbox" id="showPasswordCheckbox"/>
+                <label for="showPasswordCheckbox"><span class="ui"></span>
+                    {% if language == 'en' %}
+                        Show password
+                    {% elif language == 'es' %}
+                        Mostrar contraseña
+                    {% elif language == 'ca' %}
+                        Mostrar la contrasenya
+                    {% endif %}
+                </label>
+                <div class="btn-animate">
+                    <button type="submit" class="btn-signin">
+                        {% if language == 'en' %}
+                            Sign in
+                        {% elif language == 'es' %}
+                            Iniciar sesión
+                        {% elif language == 'ca' %}
+                            Iniciar sessió
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+
+            <script>
+                var passwordInput = document.getElementById("passwordInput");
+                var showPasswordCheckbox = document.getElementById("showPasswordCheckbox");
+
+                showPasswordCheckbox.addEventListener("change", function () {
+                    if (showPasswordCheckbox.checked) {
+                        // Mostrar la contraseña
+                        passwordInput.type = "text";
+                    } else {
+                        // Ocultar la contraseña
+                        passwordInput.type = "password";
+                    }
+                });
+
+                function changeLanguage(languageCode) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/change_language', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            console.log('Language changed');
+                            location.reload(); // Recargar la página después de cambiar el idioma
+                        }
+                    };
+                    xhr.send(JSON.stringify({language: languageCode}));
+                }
+
+            </script>
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                    crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                    crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                    crossorigin="anonymous"></script>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

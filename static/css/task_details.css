@@ -1,0 +1,37 @@
+body {
+    font-family: 'Asap', sans-serif;
+    font-weight: 400;
+}
+
+.info-container {
+    margin: auto;
+    width: 500px;
+}
+
+.mini-info {
+    width: 300px;
+    margin: auto;
+}
+
+.fecha-info {
+    width: 440px;
+    margin: auto;
+}
+
+.time-log-container {
+    width: 600px;
+}
+
+.table-container {
+    margin: auto;
+    width: 1200px;
+}
+
+.modal-dialog-square {
+    width: 150px;
+    height: 400px;
+}
+
+.task-log {
+    width: 250px;
+}

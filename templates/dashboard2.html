@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='img/teamwork.svg') }}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@100;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/dashboard2.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">Beedata Teamwork.</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown float-end">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="flagDropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                {% if language == 'es' %}
+                                    <img id="currentFlag" src="{{ url_for('static', filename='img/spain.svg') }}"
+                                         alt="España" width="20" height="20">
+                                {% elif language == 'en' %}
+                                    <img id="currentFlag"
+                                         src="{{ url_for('static', filename='img/great_britain.png') }}"
+                                         alt="Gran Bretaña" width="20" height="20">
+                                {% elif language == 'ca' %}
+                                    <img id="currentFlag" src="{{ url_for('static', filename='img/catalonia.png') }}"
+                                         alt="Cataluña" width="20" height="20">
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="flagDropdown">
+                                <li>
+                                    <div class="element-container text-center align-center">
+                                        <a class="dropdown-item btn" onclick="changeLanguage('es')">
+                                            <img src="{{ url_for('static', filename='img/spain.svg') }}" alt="España"
+                                                 width="20"
+                                                 height="20">
+                                            Español
+                                        </a>
+                                    </div>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <div class="element-container text-center align-center">
+                                        <a class="dropdown-item btn" onclick="changeLanguage('en')">
+                                            <img src="{{ url_for('static', filename='img/great_britain.png') }}"
+                                                 alt="Gran Bretaña" width="20" height="20">
+                                            English
+                                        </a>
+                                    </div>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <div class="element-container text-center align-center">
+                                        <a class="dropdown-item btn" onclick="changeLanguage('ca')">
+                                            <img src="{{ url_for('static', filename='img/catalonia.png') }}"
+                                                 alt="Cataluña"
+                                                 width="20" height="20">
+                                            Català
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            {% if language == 'en' %}
+                                Log out
+                            {% elif language == 'es' %}
+                                Cerrar sesión
+                            {% elif language == 'ca' %}
+                                Tancar sessió
+                            {% endif %}
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+{% endif %}
+
+<hr class="border border-primary border-2 opacity-100">
+<div class="container text-center">
+    <div class="row align-items-center">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            <h1 class="mt-2 text-capitalize fw-bold">
+                {% if language == 'en' %}
+                    YOUR PROJECTS
+                {% elif language == 'es' %}
+                    TUS PROYECTOS
+                {% elif language == 'ca' %}
+                    ELS TEUS PROJECTES
+                {% endif %}
+            </h1>
+        </div>
+        <div class="col-1">
+        </div>
+        <!-- Formulario de búsqueda -->
+        <div class="col-3">
+            <h6 class="text-start">
+                {% if language == 'en' %}
+                    Search tasks
+                {% elif language == 'es' %}
+                    Buscar tareas
+                {% elif language == 'ca' %}
+                    Buscar tasques
+                {% endif %}</h6>
+            <form class="d-flex" id="searchForm">
+                <input class="form-control me-2" type="search" aria-label="Buscar"
+                       id="searchInput">
+                <button class="btn btn-outline-primary" type="submit">
+                    {% if language == 'en' %}
+                        Search
+                    {% elif language == 'es' %}
+                        Buscar
+                    {% elif language == 'ca' %}
+                        Buscar
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<hr class="border border-primary border-2 opacity-100">
+
+<div class="container text-center">
+    <div class="row align-items-start">
+        <div class="col">
+            {% for proyecto in projects %}
+                <div class="row justify-content-center">
+                    <button class="fs-3 rounded-5 border btn project-btn p-3 mb-2 bg-primary text-emphasis-primary text-truncate"
+                            data-project="{{ proyecto.id }}">{{ proyecto.nombre }}</button>
+                </div>
+            {% endfor %}
+            <!-- Botón para crear un nuevo proyecto -->
+            <div class="row justify-content-center">
+                <button class="fs-3 newProject rounded-5 border btn project-btn p-3 mb-2 bg-secondary text-white text-truncate">
+                    {% if language == 'en' %}
+                        New project
+                    {% elif language == 'es' %}
+                        Nuevo proyecto
+                    {% elif language == 'ca' %}
+                        Nou projecte
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+        <div class="col d-none animate__animated animate__fadeIn" id="tasklists-column">
+            {% for proyecto in projects %}
+                {% for tasklist in proyecto.tasklists %}
+                    <div class="row justify-content-center tasklist-row" data-project="{{ proyecto.id }}">
+                        <button class="fs-4 rounded-5 border p-3 mb-2 bg-info btn tasklist-btn text-truncate"
+                                data-tasklist="{{ tasklist.id }}">{{ tasklist.nombre }}</button>
+                    </div>
+                {% endfor %}
+                <!-- Botón para crear una nueva lista de tareas -->
+                <div class="row justify-content-center">
+                    <button class="fs-4 newTasklist rounded-5 border p-3 mb-2 bg-secondary btn tasklist-btn text-white text-truncate d-none"
+                            data-project="{{ proyecto.id }}">
+                        {% if language == 'en' %}
+                            New tasklist
+                        {% elif language == 'es' %}
+                            Nueva lista de tareas
+                        {% elif language == 'ca' %}
+                            Nova llista de tasques
+                        {% endif %}
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-5 d-none animate__animated animate__fadeIn" id="tasks-column">
+            {% for proyecto in projects %}
+                {% for tasklist in proyecto.tasklists %}
+                    {% for tarea in tasklist.tareas %}
+                        <div class="row justify-content-center align-items-center task-row"
+                             data-tasklist="{{ tasklist.id }}">
+                            <button class="fs-5 rounded-5 btn tarea-btn bg-info-subtle border text-truncate"
+                                    data-task="{{ tarea.id }}">{{ tarea.nombre }}</button>
+                            <button class="rounded-5 btn task-details border" data-id="{{ tarea.id }}"><i
+                                    class="fas fa-info-circle"></i></button>
+                            <button class="rounded-5 btn task-log border" data-id="{{ tarea.id }}"><i
+                                    class="fas fa-stopwatch"></i></button>
+                            <button class="rounded-5 btn deleteTask border" data-id="{{ tarea.id }}"><i
+                                    class="fas fa-trash-alt"></i></button>
+                        </div>
+                        {% for subtask in tarea.subtareas %}
+                            <div class="row justify-content-center align-items-center subtask-row animate__animated animate__fadeIn">
+                                <button class="fs-6 rounded-5 btn mt-1 bg-transparent subtarea-btn border d-none text-truncate"
+                                        data-subtask="{{ tarea.id }}">{{ subtask.nombre }}</button>
+                                <button class="rounded-5 btn task-details subtask-details action-button border d-none"
+                                        data-id="{{ subtask.id }}" data-subtask="{{ tarea.id }}"><i
+                                        class="fas fa-info-circle"></i></button>
+                                <button class="rounded-5 btn subtask-log action-button border d-none"
+                                        data-id="{{ subtask.id }}" data-subtask="{{ tarea.id }}"><i
+                                        class="fas fa-stopwatch"></i></button>
+                                <button class="rounded-5 btn deleteSubTask border d-none" data-id="{{ subtask.id }}"
+                                        data-subtask="{{ tarea.id }}"><i
+                                        class="fas fa-trash-alt"></i></button>
+                            </div>
+                        {% endfor %}
+                        <!-- Botón para crear una nueva subtarea -->
+                        <div class="row justify-content-center align-items-center task-row"
+                             data-tasklist="{{ tasklist.id }}">
+                            <button class="fs-6 rounded-5 btn newSubtask bg-secondary border text-truncate d-none text-white"
+                                    data-task="{{ tarea.id }}">
+                                {% if language == 'en' %}
+                                    New subtask
+                                {% elif language == 'es' %}
+                                    Nueva subtarea
+                                {% elif language == 'ca' %}
+                                    Nova subtasca
+                                {% endif %}
+                            </button>
+                        </div>
+                    {% endfor %}
+                    <!-- Botón para crear una nueva tarea -->
+                    <div class="row justify-content-center align-items-center task-row"
+                         data-tasklist="{{ tasklist.id }}">
+                        <button class="fs-5 rounded-5 btn newTask bg-secondary border text-truncate text-white"
+                                data-tasklist="{{ tasklist.id }}">
+                            {% if language == 'en' %}
+                                New task
+                            {% elif language == 'es' %}
+                                Nueva tarea
+                            {% elif language == 'ca' %}
+                                Nova tasca
+                            {% endif %}
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addTimeEntryModal" tabindex="-1" aria-labelledby="addTimeEntryModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTimeEntryModalLabel">
+                    {% if language == 'en' %}
+                        Add time entry
+                    {% elif language == 'es' %}
+                        Añadir tiempo trabajado
+                    {% elif language == 'ca' %}
+                        Afegir temps treballat
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="timeEntryForm" novalidate>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            {% if language == 'en' %}
+                                Description
+                            {% elif language == 'es' %}
+                                Descripción
+                            {% elif language == 'ca' %}
+                                Descripció
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="description">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="date" class="form-label">
+                                {% if language == 'en' %}
+                                    Date
+                                {% elif language == 'es' %}
+                                    Fecha
+                                {% elif language == 'ca' %}
+                                    Data
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="time" class="form-label">
+                                {% if language == 'en' %}
+                                    Time
+                                {% elif language == 'es' %}
+                                    Hora
+                                {% elif language == 'ca' %}
+                                    Hora
+                                {% endif %}
+                            </label>
+                            <input type="time" class="form-control" id="time" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid time.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una hora válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una hora vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="hours" class="form-label">
+                                {% if language == 'en' %}
+                                    Worked hours
+                                {% elif language == 'es' %}
+                                    Horas trabajadas
+                                {% elif language == 'ca' %}
+                                    Hores treballades
+                                {% endif %}
+                            </label>
+                            <input type="number" class="form-control" id="hours" step="1" min="0" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid number of hours.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa un número válido de horas.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix un nombre vàlid d'hores.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="minutes" class="form-label">
+                                {% if language == 'en' %}
+                                    Worked minutes
+                                {% elif language == 'es' %}
+                                    Minutos trabajados
+                                {% elif language == 'ca' %}
+                                    Minuts treballats
+                                {% endif %}
+                            </label>
+                            <input type="number" class="form-control" id="minutes" step="1" min="0" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid number of minutes.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa un número válido de minutos.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix un nombre vàlid de minuts.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">
+                            {% if language == 'en' %}
+                                Tags
+                            {% elif language == 'es' %}
+                                Etiquetas
+                            {% elif language == 'ca' %}
+                                Etiquetes
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="tags">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="submit" form="timeEntryForm" class="btn btn-primary" id="addTimeEntryBtn">
+                    {% if language == 'en' %}
+                        Add
+                    {% elif language == 'es' %}
+                        Añadir
+                    {% elif language == 'ca' %}
+                        Afegir
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-square">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">
+                        {% if language == 'en' %}
+                            Adding...
+                        {% elif language == 'es' %}
+                            Añadiendo...
+                        {% elif language == 'ca' %}
+                            Afegint...
+                        {% endif %}
+                        </span>
+                </div>
+                <p>
+                    {% if language == 'en' %}
+                        Adding...
+                    {% elif language == 'es' %}
+                        Añadiendo...
+                    {% elif language == 'ca' %}
+                        Afegint...
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-labelledby="newProjectModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newProjectModalLabel">
+                    {% if language == 'en' %}
+                        Create new project
+                    {% elif language == 'es' %}
+                        Crear nuevo proyecto
+                    {% elif language == 'ca' %}
+                        Crear nou projecte
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="newProjectForm" novalidate>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">
+                            {% if language == 'en' %}
+                                Name
+                            {% elif language == 'es' %}
+                                Nombre
+                            {% elif language == 'ca' %}
+                                Nom
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="start_date" class="form-label">
+                                {% if language == 'en' %}
+                                    Start date
+                                {% elif language == 'es' %}
+                                    Fecha de inicio
+                                {% elif language == 'ca' %}
+                                    Data d'inici
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="start_date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="end_date" class="form-label">
+                                {% if language == 'en' %}
+                                    End date
+                                {% elif language == 'es' %}
+                                    Fecha de finalización
+                                {% elif language == 'ca' %}
+                                    Data de finalització
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="end_date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="submit" form="newProjectForm" class="btn btn-primary" id="addNewProjectBtn">
+                    {% if language == 'en' %}
+                        Create
+                    {% elif language == 'es' %}
+                        Crear
+                    {% elif language == 'ca' %}
+                        Crear
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newTaskListModal" tabindex="-1" aria-labelledby="newTaskListModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newTaskListModalLabel">
+                    {% if language == 'en' %}
+                        Create new task list
+                    {% elif language == 'es' %}
+                        Crear nueva lista de tareas
+                    {% elif language == 'ca' %}
+                        Crear nova llista de tasques
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="newTaskListForm" novalidate>
+                    <div class="mb-3">
+                        <label for="tasklist_name" class="form-label">
+                            {% if language == 'en' %}
+                                Name
+                            {% elif language == 'es' %}
+                                Nombre
+                            {% elif language == 'ca' %}
+                                Nom
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="tasklist_name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="submit" form="newTaskListForm" class="btn btn-primary" id="addNewTaskListBtn">
+                    {% if language == 'en' %}
+                        Create
+                    {% elif language == 'es' %}
+                        Crear
+                    {% elif language == 'ca' %}
+                        Crear
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newTaskModal" tabindex="-1" aria-labelledby="newTaskModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newTaskModalLabel">
+                    {% if language == 'en' %}
+                        Create new task
+                    {% elif language == 'es' %}
+                        Crear nueva tarea
+                    {% elif language == 'ca' %}
+                        Crear nova tasca
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="newTaskForm" novalidate>
+                    <div class="mb-3">
+                        <label for="task_name" class="form-label">
+                            {% if language == 'en' %}
+                                Name
+                            {% elif language == 'es' %}
+                                Nombre
+                            {% elif language == 'ca' %}
+                                Nom
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="task_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="task_description" class="form-label">
+                            {% if language == 'en' %}
+                                Description
+                            {% elif language == 'es' %}
+                                Descripción
+                            {% elif language == 'ca' %}
+                                Descripció
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="task_description">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="task_start_date" class="form-label">
+                                {% if language == 'en' %}
+                                    Start date
+                                {% elif language == 'es' %}
+                                    Fecha de inicio
+                                {% elif language == 'ca' %}
+                                    Data d'inici
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="task_start_date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="task_end_date" class="form-label">
+                                {% if language == 'en' %}
+                                    End date
+                                {% elif language == 'es' %}
+                                    Fecha de finalización
+                                {% elif language == 'ca' %}
+                                    Data de finalització
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="task_end_date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="submit" form="newTaskForm" class="btn btn-primary" id="addNewTaskBtn">
+                    {% if language == 'en' %}
+                        Create
+                    {% elif language == 'es' %}
+                        Crear
+                    {% elif language == 'ca' %}
+                        Crear
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newSubTaskModal" tabindex="-1" aria-labelledby="newSubTaskModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newSubTaskModalLabel">
+                    {% if language == 'en' %}
+                        Create new subtask
+                    {% elif language == 'es' %}
+                        Crear nueva subtarea
+                    {% elif language == 'ca' %}
+                        Crear nova subtasca
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="newSubTaskForm" novalidate>
+                    <div class="mb-3">
+                        <label for="subtask_name" class="form-label">
+                            {% if language == 'en' %}
+                                Name
+                            {% elif language == 'es' %}
+                                Nombre
+                            {% elif language == 'ca' %}
+                                Nom
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="subtask_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="subtask_description" class="form-label">
+                            {% if language == 'en' %}
+                                Description
+                            {% elif language == 'es' %}
+                                Descripción
+                            {% elif language == 'ca' %}
+                                Descripció
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="subtask_description">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="subtask_start_date" class="form-label">
+                                {% if language == 'en' %}
+                                    Start date
+                                {% elif language == 'es' %}
+                                    Fecha de inicio
+                                {% elif language == 'ca' %}
+                                    Data d'inici
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="subtask_start_date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="subtask_end_date" class="form-label">
+                                {% if language == 'en' %}
+                                    End date
+                                {% elif language == 'es' %}
+                                    Fecha de finalización
+                                {% elif language == 'ca' %}
+                                    Data de finalització
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="subtask_end_date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please provide a valid date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha válida.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data vàlida.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subtask_tags" class="form-label">
+                            {% if language == 'en' %}
+                                Tags
+                            {% elif language == 'es' %}
+                                Etiquetas
+                            {% elif language == 'ca' %}
+                                Etiquetes
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="subtask_tags">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="submit" form="newTaskForm" class="btn btn-primary" id="addNewSubTaskBtn">
+                    {% if language == 'en' %}
+                        Create
+                    {% elif language == 'es' %}
+                        Crear
+                    {% elif language == 'ca' %}
+                        Crear
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteTaskModal" tabindex="-1" aria-labelledby="deleteTaskModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTaskModalLabel">
+                    {% if language == 'en' %}
+                        Confirm deletion
+                    {% elif language == 'es' %}
+                        Confirmar eliminación
+                    {% elif language == 'ca' %}
+                        Confirmar eliminació
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% if language == 'en' %}
+                        Are you sure you want to delete this task?
+                    {% elif language == 'es' %}
+                        ¿Estás seguro de que deseas eliminar esta tarea?
+                    {% elif language == 'ca' %}
+                        ¿Estàs segur que vols eliminar aquesta tasca?
+                    {% endif %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="button" class="btn btn-danger" id="btnDeleteTask">
+                    {% if language == 'en' %}
+                        Delete
+                    {% elif language == 'es' %}
+                        Eliminar
+                    {% elif language == 'ca' %}
+                        Eliminar
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    (function () {
+        'use strict';
+
+        // Activa la validación de Bootstrap en los formularios
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+    const projectButtons = document.querySelectorAll('.project-btn');
+    const tasklistColumn = document.getElementById('tasklists-column');
+    const tasklistRows = document.querySelectorAll('.tasklist-row');
+    const tasklistButtons = document.querySelectorAll('.tasklist-btn');
+    const tasksColumn = document.getElementById('tasks-column');
+    const taskRows = document.querySelectorAll('.task-row');
+    const subtaskRows = document.querySelectorAll('.subtask-row');
+    const tareaButtons = document.querySelectorAll('.tarea-btn');
+    const subtareaButtons = document.querySelectorAll('.subtarea-btn');
+    const newTasklistButtons = document.querySelectorAll('.newTasklist');
+    const newSubTaskButtons = document.querySelectorAll('.newSubtask');
+    const deleteSubtaskButtons = document.querySelectorAll('.deleteSubTask');
+
+    projectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const projectId = button.getAttribute('data-project');
+            showTasklists(projectId);
+        });
+    });
+
+    tasklistButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tasklistId = button.getAttribute('data-tasklist');
+            showTasks(tasklistId);
+        });
+    });
+
+    tareaButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tareaId = button.getAttribute('data-task'); // Obtener el identificador de la tarea
+            showSubtasks(tareaId);
+        });
+    });
+
+    function showTasklists(projectId) {
+        const projectButton = document.querySelector(`.project-btn[data-project="${projectId}"]`);
+
+        if (projectButton.classList.contains('active')) {
+            // Si el proyecto ya está activo, se ocultan las listas de tareas
+            tasklistRows.forEach(row => {
+                row.classList.add('d-none');
+            });
+            tasklistColumn.classList.add('d-none');
+            taskRows.forEach(row => {
+                row.classList.add('d-none');
+            });
+            tasksColumn.classList.add('d-none');
+            projectButton.classList.remove('active');
+            projectButton.classList.remove('bg-opacity-50');
+        } else {
+            // Si el proyecto no está activo, se muestran las listas de tareas correspondientes
+            tasklistRows.forEach(row => {
+                const projectAttribute = row.getAttribute('data-project');
+                if (projectAttribute === projectId) {
+                    row.classList.remove('d-none');
+                    row.classList.add('animate__fadeIn'); // Agregar la clase de animación
+                } else {
+                    row.classList.add('d-none');
+                }
+
+                newTasklistButtons.forEach(button => {
+                    const projectAttribute = button.getAttribute('data-project');
+                    if (projectAttribute === projectId) {
+                        button.classList.remove('d-none');
+                    } else {
+                        button.classList.add('d-none');
+                    }
+                });
+            });
+
+            tasklistColumn.classList.remove('d-none');
+            tasksColumn.classList.add('d-none');
+            // Eliminar la clase 'active' de todos los proyectos
+            projectButtons.forEach(button => {
+                button.classList.remove('active');
+                button.classList.remove('bg-opacity-50');
+            });
+            // Eliminar la clase 'active' de todas las listas de tareas
+            tasklistButtons.forEach(button => {
+                button.classList.remove('active');
+                button.classList.remove('bg-opacity-50');
+            });
+            projectButton.classList.add('active');
+            projectButton.classList.add('bg-opacity-50');
+        }
+    }
+
+    function showTasks(tasklistId) {
+        const tasklistButton = document.querySelector(`.tasklist-btn[data-tasklist="${tasklistId}"]`);
+
+        if (tasklistButton.classList.contains('active')) {
+            // Si la lista de tareas ya está activa, se ocultan las tareas
+            taskRows.forEach(row => {
+                row.classList.add('d-none');
+            });
+            tasksColumn.classList.add('d-none');
+            tasklistButton.classList.remove('active');
+            tasklistButton.classList.remove('bg-opacity-50');
+        } else {
+            // Si la lista de tareas no está activa, se muestran las tareas correspondientes
+            taskRows.forEach(row => {
+                const tasklistAttribute = row.getAttribute('data-tasklist');
+                if (tasklistAttribute === tasklistId) {
+                    row.classList.remove('d-none');
+                    row.classList.add('animate__fadeIn'); // Agregar la clase de animación
+                } else {
+                    row.classList.add('d-none');
+                }
+            });
+
+            tasksColumn.classList.remove('d-none');
+            // Añadimos la clase d-none a las filas de subtareas
+            subtaskRows.forEach(row => {
+                row.classList.add('d-none');
+            });
+            // Eliminar la clase 'active' de todas las listas de tareas
+            tasklistButtons.forEach(button => {
+                button.classList.remove('active');
+                button.classList.remove('bg-opacity-50');
+            });
+            tasklistButton.classList.add('active');
+            tasklistButton.classList.add('bg-opacity-50');
+        }
+    }
+
+    function showSubtasks(tareaId) {
+        const tareaButton = document.querySelector(`.tarea-btn[data-task="${tareaId}"]`);
+        const actionButtons = document.querySelectorAll('.action-button');
+
+        if (tareaButton.classList.contains('active')) {
+            // Si la tarea ya está activa, se ocultan las subtareas y los botones de acción
+            subtareaButtons.forEach(subtaskButton => {
+                subtaskButton.classList.add('d-none');
+            });
+            actionButtons.forEach(actionButton => {
+                actionButton.classList.add('d-none');
+            });
+            newSubTaskButtons.forEach(button => {
+                button.classList.add('d-none');
+            });
+            deleteSubtaskButtons.forEach(button => {
+                button.classList.add('d-none');
+            });
+            tareaButton.classList.remove('active');
+            tareaButton.classList.remove('bg-opacity-50');
+        } else {
+            // Si la tarea no está activa, se muestran las subtareas y los botones de acción correspondientes
+            subtaskRows.forEach(row => {
+                row.classList.remove('d-none');
+            });
+            subtareaButtons.forEach(subtaskButton => {
+                const subtaskAttribute = subtaskButton.getAttribute('data-subtask');
+                if (subtaskAttribute === tareaId) {
+                    subtaskButton.classList.remove('d-none');
+                    subtaskButton.classList.add('animate__fadeIn');
+                } else {
+                    subtaskButton.classList.add('d-none');
+                }
+            });
+            actionButtons.forEach(actionButton => {
+                const actionAttribute = actionButton.getAttribute('data-subtask');
+                if (actionAttribute === tareaId) {
+                    actionButton.classList.remove('d-none');
+                    actionButton.classList.add('animate__fadeIn');
+                } else {
+                    actionButton.classList.add('d-none');
+                }
+            });
+            newSubTaskButtons.forEach(newSubTaskButton => {
+                const buttonAttribute = newSubTaskButton.getAttribute('data-task');
+                if (buttonAttribute === tareaId) {
+                    newSubTaskButton.classList.remove('d-none');
+                    newSubTaskButton.classList.add('animate__fadeIn');
+                } else {
+                    newSubTaskButton.classList.add('d-none');
+                }
+            });
+            deleteSubtaskButtons.forEach(deleteSubtaskButton => {
+                const buttonAttribute = deleteSubtaskButton.getAttribute('data-subtask');
+                if (buttonAttribute === tareaId) {
+                    deleteSubtaskButton.classList.remove('d-none');
+                    deleteSubtaskButton.classList.add('animate__fadeIn');
+                } else {
+                    deleteSubtaskButton.classList.add('d-none');
+                }
+            });
+
+            tareaButtons.forEach(button => {
+                button.classList.remove('active');
+                button.classList.remove('bg-opacity-50');
+            });
+            tareaButton.classList.add('active');
+            tareaButton.classList.add('bg-opacity-50');
+        }
+    }
+
+    $(document).on('click', '.task-log, .subtask-log', function () {
+        // Obtener fecha y hora actual
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().slice(0, 10); // Formato yyyy-mm-dd
+        const currentTimeString = currentDate.toTimeString().slice(0, 5); // Formato hh:mm
+
+        // Establecer valores predeterminados en los campos de fecha y hora
+        document.getElementById("description").value = "";
+        document.getElementById("date").value = currentDateString;
+        document.getElementById("time").value = currentTimeString;
+        document.getElementById("hours").value = "1";
+        document.getElementById("minutes").value = "0";
+        document.getElementById("tags").value = "";
+
+        var taskOrSubtaskId = $(this).data("id");
+        console.log(taskOrSubtaskId);
+        var modal = $('#addTimeEntryModal');
+        modal.data('id', taskOrSubtaskId);
+        modal.modal('show');
+    });
+    document.getElementById("hours").onkeydown = function (event) {
+        // Obtener la tecla presionada
+        var keyCode = event.which || event.keyCode;
+
+        // Evitar que se escriba el punto o la coma
+        if (keyCode === 190 || keyCode === 188 || keyCode === 110 || keyCode === 189 || keyCode === 187 || keyCode === 107 || keyCode === 109) {
+            event.preventDefault();
+        }
+    };
+    document.getElementById("minutes").onkeydown = function (event) {
+        // Obtener la tecla presionada
+        var keyCode = event.which || event.keyCode;
+
+        // Evitar que se escriba el punto o la coma
+        if (keyCode === 190 || keyCode === 188 || keyCode === 110 || keyCode === 189 || keyCode === 187 || keyCode === 107 || keyCode === 109) {
+            event.preventDefault();
+        }
+    };
+    document.addEventListener("keydown", function (event) {
+        console.log(event.keyCode);
+    });
+    $(document).on('click', '.task-details', function () {
+        var taskId = $(this).data("id");
+        // Redirigir a la página de detalles con el ID de la tarea en la URL
+        window.location.href = "/task_details/" + taskId;
+    });
+    $('#addTimeEntryBtn').click(function () {
+        var form = document.getElementById('addTimeEntryModal').querySelector('form');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        var loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
+        loadingModal.show();
+
+        var taskId = $('#addTimeEntryModal').data('id');
+        var description = $('#description').val();
+        var date = $('#date').val();
+        var time = $('#time').val();
+        var hours = $('#hours').val();
+        var minutes = $('#minutes').val();
+        var tags = $('#tags').val();
+
+        // Realiza la llamada AJAX solo si el formulario es válido
+        $.ajax({
+            url: '/add_time_entry',
+            data: {
+                'taskId': taskId,
+                'description': description,
+                'date': date,
+                'time': time,
+                'hours': hours,
+                'minutes': minutes,
+                'tags': tags,
+            },
+            type: 'POST',
+            success: function (response) {
+                $('#addTimeEntryModal').modal('hide');
+                form.classList.remove('was-validated');
+                form.reset();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#searchForm').submit(function (event) {
+            event.preventDefault(); // Evita el envío del formulario por defecto
+
+            var query = $('#searchInput').val(); // Obtiene el término de búsqueda del input
+
+            console.log(query)
+
+            $.ajax({
+                url: '/search',
+                data: {
+                    'query': query
+                },
+                type: 'POST',
+                success: function (response) {
+                    // Redirecciona a la página de resultados de búsqueda
+                    window.location.href = '/show_results/' + query;
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+    function changeLanguage(languageCode) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/change_language', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log('Language changed');
+                location.reload(); // Recargar la página después de cambiar el idioma
+            }
+        };
+        xhr.send(JSON.stringify({language: languageCode}));
+    }
+
+    $(document).on('click', '.newProject', function () {
+        var modal = $('#newProjectModal');
+        modal.modal('show');
+    });
+    $('#addNewProjectBtn').click(function () {
+        var form = document.getElementById('newProjectModal').querySelector('form');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        var loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
+        loadingModal.show();
+
+        var project_name = $('#name').val();
+        var start_date = $('#start_date').val();
+        var end_date = $('#end_date').val();
+
+        // Realiza la llamada AJAX solo si el formulario es válido
+        $.ajax({
+            url: '/create_project',
+            data: {
+                'project_name': project_name,
+                'start_date': start_date,
+                'end_date': end_date,
+            },
+            type: 'POST',
+            success: function (response) {
+                location.reload();
+                $('#newProjectModal').modal('hide');
+                form.classList.remove('was-validated');
+                form.reset();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    $(document).on('click', '.newTasklist', function () {
+        var modal = $('#newTaskListModal');
+        var projectId = $(this).data("project");
+        console.log(projectId);
+        modal.data('id', projectId);
+        modal.modal('show');
+    });
+    $('#addNewTaskListBtn').click(function () {
+        var form = document.getElementById('newTaskListModal').querySelector('form');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        var loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
+        var projectId = $('#newTaskListModal').data('id');
+        var tasklist_name = $('#tasklist_name').val();
+
+        // Realiza la llamada AJAX solo si el formulario es válido
+        $.ajax({
+            url: '/create_tasklist',
+            data: {
+                'tasklist_name': tasklist_name,
+                'project_id': projectId,
+            },
+            type: 'POST',
+            success: function (response) {
+                location.reload();
+                $('#newTaskListModal').modal('hide');
+                form.classList.remove('was-validated');
+                form.reset();
+                loadingModal.show();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    $(document).on('click', '.newTask', function () {
+        var modal = $('#newTaskModal');
+        var tasklistId = $(this).data("tasklist");
+        modal.data('id', tasklistId);
+        modal.modal('show');
+    });
+    $('#addNewTaskBtn').click(function () {
+        var form = document.getElementById('newTaskModal').querySelector('form');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        var loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
+        loadingModal.show();
+
+        var tasklistId = $('#newTaskModal').data('id');
+        var task_name = $('#task_name').val();
+        var task_start_date = $('#task_start_date').val();
+        var task_end_date = $('#task_end_date').val();
+        var task_description = $('#task_description').val();
+
+        // Realiza la llamada AJAX solo si el formulario es válido
+        $.ajax({
+            url: '/create_task',
+            data: {
+                'task_name': task_name,
+                'start_date': task_start_date,
+                'end_date': task_end_date,
+                'task_description': task_description,
+                'tasklist_id': tasklistId,
+            },
+            type: 'POST',
+            success: function (response) {
+                location.reload();
+                $('#newTaskModal').modal('hide');
+                form.classList.remove('was-validated');
+                form.reset();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    $(document).on('click', '.newSubtask', function () {
+        var modal = $('#newSubTaskModal');
+        var taskId = $(this).data("task");
+        modal.data('id', taskId);
+        modal.modal('show');
+    });
+    $('#addNewSubTaskBtn').click(function () {
+        var form = document.getElementById('newSubTaskModal').querySelector('form');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        var loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
+        loadingModal.show();
+
+        var subtaskId = $('#newSubTaskModal').data('id');
+        var subtask_name = $('#subtask_name').val();
+        var subtask_start_date = $('#subtask_start_date').val();
+        var subtask_end_date = $('#subtask_end_date').val();
+        var subtask_description = $('#subtask_description').val();
+        var tags = $('#subtask_tags').val();
+
+        // Realiza la llamada AJAX solo si el formulario es válido
+        $.ajax({
+            url: '/create_subtask',
+            data: {
+                'subtask_name': subtask_name,
+                'start_date': subtask_start_date,
+                'end_date': subtask_end_date,
+                'subtask_description': subtask_description,
+                'task_id': subtaskId,
+                'tags': tags,
+            },
+            type: 'POST',
+            success: function (response) {
+                location.reload();
+                $('#newSubTaskModal').modal('hide');
+                form.classList.remove('was-validated');
+                form.reset();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        
+    });
+    $(document).on('click', '.deleteTask, .deleteSubTask', function () {
+        var modal = $('#deleteTaskModal');
+        var taskId = $(this).data("id");
+        modal.data('id', taskId);
+        modal.modal('show');
+    });
+    $('#btnDeleteTask').click(function () {
+        $.ajax({
+            url: '/delete_task/' + $('#deleteTaskModal').data('id'),
+            type: 'DELETE',
+            success: function (response) {
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

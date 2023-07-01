@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/teamwork.svg') }}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@100;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/dashboard2.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">
+            {% if language == 'en' %}
+                Projects
+            {% elif language == 'es' %}
+                Proyectos
+            {% elif language == 'ca' %}
+                Projectes
+            {% endif %}
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown float-end">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="flagDropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                {% if language == 'es' %}
+                                    <img id="currentFlag" src="{{ url_for('static', filename='img/spain.svg') }}"
+                                         alt="España" width="20" height="20">
+                                {% elif language == 'en' %}
+                                    <img id="currentFlag"
+                                         src="{{ url_for('static', filename='img/great_britain.png') }}"
+                                         alt="Gran Bretaña" width="20" height="20">
+                                {% elif language == 'ca' %}
+                                    <img id="currentFlag" src="{{ url_for('static', filename='img/catalonia.png') }}"
+                                         alt="Cataluña" width="20" height="20">
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="flagDropdown">
+                                <li>
+                                    <div class="element-container text-center align-center">
+                                        <a class="dropdown-item btn" onclick="changeLanguage('es')">
+                                            <img src="{{ url_for('static', filename='img/spain.svg') }}" alt="España"
+                                                 width="20"
+                                                 height="20">
+                                            Español
+                                        </a>
+                                    </div>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <div class="element-container text-center align-center">
+                                        <a class="dropdown-item btn" onclick="changeLanguage('en')">
+                                            <img src="{{ url_for('static', filename='img/great_britain.png') }}"
+                                                 alt="Gran Bretaña" width="20" height="20">
+                                            English
+                                        </a>
+                                    </div>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li>
+                                    <div class="element-container text-center align-center">
+                                        <a class="dropdown-item btn" onclick="changeLanguage('ca')">
+                                            <img src="{{ url_for('static', filename='img/catalonia.png') }}"
+                                                 alt="Cataluña"
+                                                 width="20" height="20">
+                                            Català
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            {% if language == 'en' %}
+                                Log out
+                            {% elif language == 'es' %}
+                                Cerrar sesión
+                            {% elif language == 'ca' %}
+                                Tancar sessió
+                            {% endif %}
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<hr class="border border-primary border-2 opacity-100">
+<div class="container text-center">
+    <div class="row align-items-center">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            <h1 class="mt-2 text-capitalize fw-bold">
+                {% if language == 'en' %}
+                    SEARCH RESULTS
+                {% elif language == 'es' %}
+                    RESULTADOS DE LA BÚSQUEDA
+                {% elif language == 'ca' %}
+                    RESULTATS DE LA CERCA
+                {% endif %}
+            </h1>
+        </div>
+        <div class="col-1">
+        </div>
+        <!-- Formulario de búsqueda -->
+        <div class="col-3">
+            <h6 class="text-start">
+                {% if language == 'en' %}
+                    Search tasks
+                {% elif language == 'es' %}
+                    Buscar tareas
+                {% elif language == 'ca' %}
+                    Buscar tasques
+                {% endif %}</h6>
+            <form class="d-flex" id="searchForm">
+                <input class="form-control me-2" type="search" aria-label="Buscar"
+                       id="searchInput">
+                <button class="btn btn-outline-primary" type="submit">
+                    {% if language == 'en' %}
+                        Search
+                    {% elif language == 'es' %}
+                        Buscar
+                    {% elif language == 'ca' %}
+                        Buscar
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<hr class="border border-primary border-2 opacity-100">
+
+{% if not tasks %}
+    <div class="container text-center">
+        <h3 class="mt-5">
+            {% if language == 'en' %}
+                No results found
+            {% elif language == 'es' %}
+                No se encontraron resultados
+            {% elif language == 'ca' %}
+                No s'han trobat resultats
+            {% endif %}
+        </h3>
+    </div>
+{% endif %}
+
+<div class="container text-center">
+    {% for task in tasks %}
+        <div class="row justify-content-center align-items-center task-row">
+            <button class="fs-5 rounded-5 btn tarea-btn bg-info-subtle border text-truncate"
+                    data-task="{{ task.id }}">{{ task['content'] }}</button>
+            <button class="rounded-5 btn task-details border" data-id="{{ task.id }}"><i
+                    class="fas fa-info-circle"></i></button>
+            <button class="rounded-5 btn task-log border" data-id="{{ task.id }}"><i
+                    class="fas fa-stopwatch"></i></button>
+        </div>
+    {% endfor %}
+</div>
+<div class="modal fade" id="addTimeEntryModal" tabindex="-1" aria-labelledby="addTimeEntryModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTimeEntryModalLabel">
+                    {% if language == 'en' %}
+                        Add worked time
+                    {% elif language == 'es' %}
+                        Añadir tiempo trabajado
+                    {% elif language == 'ca' %}
+                        Afegir temps treballat
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="timeEntryForm" novalidate>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            {% if language == 'en' %}
+                                Description
+                            {% elif language == 'es' %}
+                                Descripción
+                            {% elif language == 'ca' %}
+                                Descripció
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="description">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="date" class="form-label">
+                                {% if language == 'en' %}
+                                    Date
+                                {% elif language == 'es' %}
+                                    Fecha
+                                {% elif language == 'ca' %}
+                                    Data
+                                {% endif %}
+                            </label>
+                            <input type="date" class="form-control" id="date" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please enter a date.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una fecha.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una data.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="time" class="form-label">
+                                {% if language == 'en' %}
+                                    Time
+                                {% elif language == 'es' %}
+                                    Hora
+                                {% elif language == 'ca' %}
+                                    Hora
+                                {% endif %}
+                            </label>
+                            <input type="time" class="form-control" id="time" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please enter a time.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa una hora.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix una hora.
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="hours" class="form-label">
+                                {% if language == 'en' %}
+                                    Worked hours
+                                {% elif language == 'es' %}
+                                    Horas trabajadas
+                                {% elif language == 'ca' %}
+                                    Hores treballades
+                                {% endif %}
+                            </label>
+                            <input type="number" class="form-control" id="hours" step="1" min="0" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please enter the worked hours.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa las horas trabajadas.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix les hores treballades.
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="minutes" class="form-label">
+                                {% if language == 'en' %}
+                                    Worked minutes
+                                {% elif language == 'es' %}
+                                    Minutos trabajados
+                                {% elif language == 'ca' %}
+                                    Minuts treballats
+                                {% endif %}
+                            </label>
+                            <input type="number" class="form-control" id="minutes" step="1" min="0" required>
+                            <div class="invalid-feedback">
+                                {% if language == 'en' %}
+                                    Please enter the worked minutes.
+                                {% elif language == 'es' %}
+                                    Por favor, ingresa los minutos trabajados.
+                                {% elif language == 'ca' %}
+                                    Si us plau, introdueix els minuts treballats.
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">
+                            {% if language == 'en' %}
+                                Tags
+                            {% elif language == 'es' %}
+                                Etiquetas
+                            {% elif language == 'ca' %}
+                                Etiquetes
+                            {% endif %}
+                        </label>
+                        <input type="text" class="form-control" id="tags">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% if language == 'en' %}
+                        Cancel
+                    {% elif language == 'es' %}
+                        Cancelar
+                    {% elif language == 'ca' %}
+                        Cancel·lar
+                    {% endif %}
+                </button>
+                <button type="submit" form="timeEntryForm" class="btn btn-primary" id="addTimeEntryBtn">
+                    {% if language == 'en' %}
+                        Add
+                    {% elif language == 'es' %}
+                        Añadir
+                    {% elif language == 'ca' %}
+                        Afegir
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-square">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">
+                        {% if language == 'en' %}
+                            Adding...
+                        {% elif language == 'es' %}
+                            Añadiendo...
+                        {% elif language == 'ca' %}
+                            Afegint...
+                        {% endif %}
+                        </span>
+                </div>
+                <p>
+                    {% if language == 'en' %}
+                        Adding...
+                    {% elif language == 'es' %}
+                        Añadiendo...
+                    {% elif language == 'ca' %}
+                        Afegint...
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+
+        // Activa la validación de Bootstrap en los formularios
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+    $(document).on('click', '.task-log, .subtask-log', function () {
+        // Obtener fecha y hora actual
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().slice(0, 10); // Formato yyyy-mm-dd
+        const currentTimeString = currentDate.toTimeString().slice(0, 5); // Formato hh:mm
+
+        // Establecer valores predeterminados en los campos de fecha y hora
+        document.getElementById("description").value = "";
+        document.getElementById("date").value = currentDateString;
+        document.getElementById("time").value = currentTimeString;
+        document.getElementById("hours").value = "1";
+        document.getElementById("minutes").value = "0";
+        document.getElementById("tags").value = "";
+
+        var taskOrSubtaskId = $(this).data("id");
+        console.log(taskOrSubtaskId);
+        var modal = $('#addTimeEntryModal');
+        modal.data('id', taskOrSubtaskId);
+        modal.modal('show');
+    });
+    document.getElementById("hours").onkeydown = function (event) {
+        // Obtener la tecla presionada
+        var keyCode = event.which || event.keyCode;
+
+        // Evitar que se escriba el punto o la coma
+        if (keyCode === 190 || keyCode === 188 || keyCode === 110 || keyCode === 189 || keyCode === 187 || keyCode === 107 || keyCode === 109) {
+            event.preventDefault();
+        }
+    };
+    document.getElementById("minutes").onkeydown = function (event) {
+        // Obtener la tecla presionada
+        var keyCode = event.which || event.keyCode;
+
+        // Evitar que se escriba el punto o la coma
+        if (keyCode === 190 || keyCode === 188 || keyCode === 110 || keyCode === 189 || keyCode === 187 || keyCode === 107 || keyCode === 109) {
+            event.preventDefault();
+        }
+    };
+    document.addEventListener("keydown", function (event) {
+        console.log(event.keyCode);
+    });
+    $(document).on('click', '.task-details', function () {
+        var taskId = $(this).data("id");
+        // Redirigir a la página de detalles con el ID de la tarea en la URL
+        window.location.href = "/task_details/" + taskId;
+    });
+    $('#addTimeEntryBtn').click(function () {
+        var form = document.getElementById('addTimeEntryModal').querySelector('form');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        var loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
+        loadingModal.show();
+
+        var taskId = $('#addTimeEntryModal').data('id');
+        var description = $('#description').val();
+        var date = $('#date').val();
+        var time = $('#time').val();
+        var hours = $('#hours').val();
+        var minutes = $('#minutes').val();
+        var tags = $('#tags').val();
+
+        // Realiza la llamada AJAX solo si el formulario es válido
+        $.ajax({
+            url: '/add_time_entry',
+            data: {
+                'taskId': taskId,
+                'description': description,
+                'date': date,
+                'time': time,
+                'hours': hours,
+                'minutes': minutes,
+                'tags': tags,
+            },
+            type: 'POST',
+            success: function (response) {
+                $('#addTimeEntryModal').modal('hide');
+                form.classList.remove('was-validated');
+                form.reset();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#searchForm').submit(function (event) {
+            event.preventDefault(); // Evita el envío del formulario por defecto
+
+            var query = $('#searchInput').val(); // Obtiene el término de búsqueda del input
+
+            console.log(query)
+
+            $.ajax({
+                url: '/search',
+                data: {
+                    'query': query
+                },
+                type: 'POST',
+                success: function (response) {
+                    // Redirecciona a la página de resultados de búsqueda
+                    window.location.href = '/show_results/' + query;
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+    function changeLanguage(languageCode) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/change_language', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log('Language changed');
+                location.reload(); // Recargar la página después de cambiar el idioma
+            }
+        };
+        xhr.send(JSON.stringify({language: languageCode}));
+    }
+</script>
+</body>
+</html>

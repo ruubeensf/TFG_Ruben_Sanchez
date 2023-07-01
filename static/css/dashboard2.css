@@ -1,0 +1,87 @@
+body {
+    font-family: 'Asap', sans-serif;
+    font-weight: 400;
+}
+
+.project-btn {
+    margin-bottom: 5px; /* agrega un margen inferior de 5 píxeles */
+    margin-top: 5px;
+    width: 270px; /* establece el ancho deseado */
+}
+
+.tasklist-btn {
+    margin-bottom: 5px; /* agrega un margen inferior de 5 píxeles */
+    margin-top: 5px;
+    width: 250px; /* establece el ancho deseado */
+}
+
+.tarea-btn {
+    margin-bottom: 5px; /* agrega un margen inferior de 5 píxeles */
+    margin-top: 5px;
+    width: 240px; /* establece el ancho deseado */
+}
+
+.subtarea-btn {
+    margin-bottom: 5px; /* agrega un margen inferior de 10 píxeles */
+    width: 200px; /* establece el ancho deseado */
+}
+
+.modal-dialog-square {
+    width: 150px;
+    height: 400px;
+}
+
+.btn.task-details {
+    height: 44px;
+    width: 44px;
+    margin-left: 5px;
+}
+
+.btn.task-log {
+    height: 44px;
+    width: 44px;
+    margin-left: 5px;
+}
+
+.btn.subtask-log {
+    height: 38px;
+    width: 40px;
+    margin-left: 5px;
+}
+
+.btn.deleteTask {
+    height: 44px;
+    width: 44px;
+    margin-left: 5px;
+}
+
+.btn.deleteSubTask {
+    height: 38px;
+    width: 40px;
+    margin-left: 5px;
+}
+
+.btn.task-details.subtask-details {
+    height: 38px;
+    width: 40px;
+    margin-left: 5px;
+}
+
+.newProject {
+    width: 240px;
+}
+
+.newTasklist {
+    width: 230px;
+}
+
+.newTask {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 300px;
+}
+
+.newSubtask {
+    width: 250px;
+}
+
