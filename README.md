@@ -7,7 +7,7 @@ Aquest projecte és una aplicació de Time Tracking que utilitza l'API de Teamwo
 
 Per a executar el projecte, cal descarregar tots els arxius del repositori i tenir instal·lat Docker.
 
-Després de descarregar els arxius, s'ha de modificar la línea 10 del fitxer main.py. Aquesta línea conté la clau d'accés a l'API de Teamwork. Per a obtenir la clau d'accés, cal seguir els següents passos:
+Després de descarregar els arxius, s'ha de modificar la línea 10 del fitxer main.py. A aquesta línea s'ha d'introduir la clau d'accés a l'API de Teamwork. Per a obtenir la clau d'accés, cal seguir els següents passos:
 
 1. Entrar a Teamwork
 2. Anar al perfil d'usuari
