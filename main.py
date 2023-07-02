@@ -59,7 +59,7 @@ def login():
             session['userid'] = json_response['account']['userId']
             session['language'] = 'es'
             # Si la solicitud fue exitosa, redirige al usuario a otra página
-            return redirect(url_for('dashboard'))
+            return redirect('/dashboard')
         else:
             # Si la solicitud falló, muestra un mensaje de error al usuario
             error_message = 'Error de inicio de sesión. Por favor, inténtalo de nuevo.'
@@ -79,7 +79,7 @@ def logout():
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     if 'language' not in session:
         session['language'] = 'es'
@@ -173,7 +173,7 @@ def dashboard():
 def add_time_entry():
     # Si el usuario no ha iniciado sesión, le manda a la pagina de inicio de sesion
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     task_id = request.form['taskId']
     description = request.form['description']
@@ -226,7 +226,7 @@ def add_time_entry():
 def task_details(task_id):
     # Si el usuario no ha iniciado sesión, le manda a la pagina de inicio de sesion
     if 'logged_in' not in session:
-        return render_template('login.html', language='es')
+        return redirect('/')
 
     headers = {
         'Authorization': 'Basic ' + session['credentials']
@@ -270,7 +270,7 @@ def search():
 def showResults(query):
     # Si el usuario no ha iniciado sesión, le manda a la pagina de inicio de sesion
     if 'logged_in' not in session:
-        return render_template('login.html', language=session['language'])
+        return redirect('/')
 
     headers = {
         'Authorization': 'Basic ' + session['credentials']
@@ -300,7 +300,7 @@ def change_language():
 @app.route('/create_project', methods=['POST'])
 def create_project():
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     project_name = request.form['project_name']
     start_date_str = request.form['start_date']
@@ -340,7 +340,7 @@ def create_project():
 @app.route('/create_tasklist', methods=['POST'])
 def create_tasklist():
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     tasklist_name = request.form['tasklist_name']
     project_id = request.form['project_id']
@@ -370,7 +370,7 @@ def create_tasklist():
 @app.route('/create_task', methods=['POST'])
 def create_task():
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     task_name = request.form['task_name']
     start_date_str = request.form['start_date']
@@ -417,7 +417,7 @@ def create_task():
 @app.route('/create_subtask', methods=['POST'])
 def create_subtask():
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     subtask_name = request.form['subtask_name']
     start_date_str = request.form['start_date']
@@ -468,7 +468,7 @@ def create_subtask():
 @app.route('/delete_task/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
     if 'logged_in' not in session:
-        return render_template('login.html')
+        return redirect('/')
 
     headers = {
         'Authorization': 'Basic ' + session['credentials']
