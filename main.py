@@ -57,7 +57,8 @@ def login():
             session['firstname'] = json_response['account']['firstname']
             session['lastname'] = json_response['account']['lastname']
             session['userid'] = json_response['account']['userId']
-            session['language'] = 'es'
+            if 'language' not in session:
+                session['language'] = 'es'
             # Si la solicitud fue exitosa, redirige al usuario a otra página
             return redirect('/dashboard')
         else:
