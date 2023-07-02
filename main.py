@@ -24,7 +24,7 @@ def home():
     # Si el usuario no ha iniciado sesión, le manda a la pagina de inicio de sesion
     if 'logged_in' not in session:
         return render_template('login.html', language=session['language'])
-    return redirect(url_for('dashboard'))
+    return redirect('/dashboard')
 
 
 @app.route('/login', methods=['GET', 'POST'])
